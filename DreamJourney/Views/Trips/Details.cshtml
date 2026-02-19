@@ -1,0 +1,304 @@
+﻿@model DreamJourney.ViewModels.Trip.TripDetailsViewModel
+
+@{
+    ViewData["Title"] = "Trip Details";
+}
+
+<h1 class="mb-4 cta-tan-text">@Model.Title</h1>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <img class="img-fluid rounded shadow-sm w-100"
+             src="@Model.ImageUrl"
+             alt="Trip image" />
+    </div>
+
+    <div class="col-md-6">
+        <p>
+            <strong>Категория:</strong>
+            @Model.DepartmentName /
+            @Model.CategoryName /
+            @Model.SubCategoryName
+        </p>
+
+        <p><strong>Дестинация:</strong> @Model.Destinations</p>
+        <p><strong>Отпътуване:</strong> @Model.Date.ToString("dd.MM.yyyy")</p>
+        <p><strong>Брой дни:</strong> @Model.Days</p>
+        <p><strong>От:</strong> @Model.FromPlace</p>
+        <p><strong>Свободни места:</strong> @Model.AvailableSeats</p>
+
+        <p class="fw-bold cta-tan-text fs-5">
+            Цена: @Model.Price €
+        </p>
+
+        <p><strong>Организатор:</strong> @Model.UserFirstLastName</p>
+    </div>
+</div>
+
+<hr />
+
+<div class="mb-4">
+    <h4 class="fw-bold">Описание</h4>
+    <p>@Model.Description</p>
+</div>
+
+<hr />
+
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <h4 class="fw-bold mb-3">Характеристики</h4>
+
+        @if (Model.Features != null && Model.Features.Any())
+        {
+            <ul class="list-unstyled">
+                @foreach (var feature in Model.Features)
+                {
+                    <li class="mb-1">• @feature</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">Няма добавени характеристики.</p>
+        }
+    </div>
+
+    <div class="col-md-6">
+        <h4 class="fw-bold mb-3">Локация</h4>
+
+        <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
+            <iframe src="https://www.google.com/maps?q=@Uri.EscapeDataString(Model.Destinations)&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<div class="row my-4">
+    <div class="col-12 d-flex justify-content-center">
+
+        @if (Model.LoggedUserId == 0)
+        {
+            <div class="d-flex gap-3">
+                <a asp-controller="Users"
+                   asp-action="Login"
+                   class="btn btn-tan px-4">
+                    Резервирай
+                </a>
+
+                <a asp-action="List"
+                   class="btn btn-cta-cadetblue px-4">
+                    Назад
+                </a>
+            </div>
+        }
+
+        else if (Model.IsTraveller)
+        {
+            if (Model.HasApplied)
+            {
+                <div class="d-flex gap-3">
+                    <button class="btn btn-info px-4" disabled>
+                        Резервирано
+                    </button>
+
+                    <a asp-action="List"
+                       class="btn btn-cta-cadetblue px-4">
+                        Назад
+                    </a>
+                </div>
+            }
+            else if (Model.AvailableSeats == 0)
+            {
+                <div class="d-flex flex-column align-items-center gap-3">
+                    <span class="badge bg-danger fs-6 px-4 py-2">
+                        Няма свободни места
+                    </span>
+
+                    <a asp-action="List"
+                       class="btn btn-cta-cadetblue px-4">
+                        Назад
+                    </a>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="TripApplications"
+                      asp-action="ApplyFromDetails"
+                      method="post"
+                      class="d-flex align-items-center gap-3">
+
+                    <input type="hidden" name="tripId" value="@Model.Id" />
+
+                    <label class="fw-semibold mb-0">
+                        Брой пътуващи:
+                    </label>
+
+                    <input type="number"
+                           name="peopleCount"
+                           min="1"
+                           max="@Model.AvailableSeats"
+                           value="1"
+                           class="form-control"
+                           style="width:100px"
+                           required />
+
+                    <button type="submit"
+                            class="btn btn-tan px-4">
+                        Резервирай
+                    </button>
+
+                    <a asp-action="List"
+                       class="btn btn-cta-cadetblue px-4">
+                       Назад
+                    </a>
+                </form>
+            }
+        }
+    </div>
+</div>
+
+@if (Model.IsTripCreator)
+{
+    <div class="d-flex justify-content-center">
+        <a asp-action="List"
+           class="btn btn-cta-cadetblue px-4">
+            Назад
+        </a>
+    </div>
+    
+    @if (Model.CreatorUserId == Model.LoggedUserId)
+    {
+        <div class="d-flex justify-content-center mt-4">
+            <form asp-controller="Trips"
+                  asp-action="Delete"
+                  method="post"
+                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете това пътуване?');">
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <button type="submit"
+                        class="btn btn-delete-light px-4">
+                    Изтрий пътуването
+                </button>
+            </form>
+        </div>
+        <hr/>
+        <h3 class="fw-bold text-center cta-tan-text mb-4">
+            Заявки за това пътуване
+        </h3>
+
+        @if (Model.TripApplications == null || !Model.TripApplications.Any())
+        {
+            <p class="text-center text-muted fs-5">
+                Няма подадени заявки.
+            </p>
+        }
+        else
+        {
+            @foreach (var app in Model.TripApplications.OrderByDescending(a => a.Id))
+            {
+                <div class="card mb-3 shadow-sm w-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+
+                            <div class="col-md-4">
+                                <div class="fw-bold">@app.UserFirstLastName</div>
+                                <div class="text-muted">@app.UserEmail</div>
+                            </div>
+
+                            <div class="col-md-2 text-center">
+                                <strong>@app.PeopleCount</strong><br />
+                                <small>човека</small>
+                            </div>
+
+                            <div class="col-md-3 text-center">
+                                @switch (app.Status)
+                                {
+                                    case DreamJourney.Data.Models.Enums.ApplicationStatus.Pending:
+                                        <span class="badge badge-muted fs-6 px-4 py-2">Изчакване</span>
+                                        break;
+                                    case DreamJourney.Data.Models.Enums.ApplicationStatus.Accepted:
+                                        <span class="badge badge-cadet fs-6 px-4 py-2">Прието</span>
+                                        break;
+                                    case DreamJourney.Data.Models.Enums.ApplicationStatus.Completed:
+                                        <span class="badge badge-tan fs-6 px-4 py-2">Завършено</span>
+                                        break;
+                                    case DreamJourney.Data.Models.Enums.ApplicationStatus.Rejected:
+                                        <span class="badge badge-danger fs-6 px-4 py-2">Отхвърлено</span>
+                                        break;
+                                }
+                            </div>
+
+                            <div class="col-md-3 text-center">
+                                @if (app.Status == DreamJourney.Data.Models.Enums.ApplicationStatus.Pending)
+                                {
+                                    <form asp-controller="TripApplications"
+                                          asp-action="Accept"
+                                          method="post"
+                                          class="d-inline">
+                                        <input type="hidden" name="id" value="@app.Id" />
+                                        <button class="btn btn-success btn-sm px-3">Приеми</button>
+                                    </form>
+
+                                    <form asp-controller="TripApplications"
+                                          asp-action="Reject"
+                                          method="post"
+                                          class="d-inline ms-2">
+                                        <input type="hidden" name="id" value="@app.Id" />
+                                        <button class="btn btn-danger btn-sm px-3">Отхвърли</button>
+                                    </form>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }    
+}
+
+@if (!Model.IsTripCreator)
+{
+    <hr />
+    <h4 class="fw-bold mt-3 cta-tan-text">Подобни пътувания</h4>
+
+    @if (Model.SimilarTrips != null && Model.SimilarTrips.Any())
+    {
+        <div class="row g-4 mt-3">
+            @foreach (var trip in Model.SimilarTrips)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card border-0 shadow-sm hover-card h-100">
+
+                        <img src="@trip.ImageUrl"
+                             class="card-img-top rounded-top"
+                             style="height: 200px; object-fit: cover;" />
+
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">@trip.Title</h6>
+                            <h6 class="fw-bold cta-cadetblue">@trip.Destinations</h6>
+                            <p class="cta-tan-text fw-semibold">
+                                @trip.Days дни · @trip.Price €
+                            </p>
+
+                            <a asp-action="Details"
+                               asp-route-id="@trip.Id"
+                               class="btn btn-cta-cadetblue btn-sm mt-2">
+                                Разгледай
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted mt-3">Няма подобни пътувания.</p>
+    }
+}
+
+

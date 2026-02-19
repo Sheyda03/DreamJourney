@@ -1,0 +1,63 @@
+﻿@model IEnumerable<DreamJourney.ViewModels.Trip.TripListViewModel>
+
+@{
+    ViewData["Title"] = "Моите предложения";
+}
+
+<h2 class="fw-bold cta-tan-text mb-4 text-center">
+    Моите предложения
+</h2>
+
+<a asp-controller="Trips"
+    asp-action="Create"
+    class="btn btn-cta-cadetblue mb-4">
+    Добави оферта
+</a>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center fs-5">
+        Все още нямате добавени екскурзии.
+    </p>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var trip in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <img src="@trip.ImageUrl"
+                         class="card-img-top"
+                         style="height:200px; object-fit:cover;" />
+
+                    <div class="card-body text-center">
+                        <h5 class="fw-bold">@trip.Title</h5>
+
+                        <p class="text-muted mb-1">
+                            @trip.Days дни · @trip.Price €
+                        </p>
+
+                        <p class="small text-muted">
+                            @trip.DepartmentName / @trip.CategoryName
+                        </p>
+
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <a asp-action="Details"
+                               asp-route-id="@trip.Id"
+                               class="btn btn-sm btn-tan btn-outline-primary">
+                                Детайли
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@trip.Id"
+                               class="btn btn-sm btn-cta-cadetblue btn-outline-secondary">
+                                Редакция
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

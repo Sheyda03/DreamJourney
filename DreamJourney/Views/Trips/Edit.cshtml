@@ -1,0 +1,204 @@
+﻿@model DreamJourney.ViewModels.Trip.TripEditViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Създай оферта" : "Редактирай оферта";
+}
+
+<h1 cta-tan-text>@ViewData["Title"]</h1>
+<hr />
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="row g-3">
+
+        <div class="col-md-6">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Date" class="form-label"></label>
+            <input asp-for="Date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="Days" class="form-label"></label>
+            <input asp-for="Days" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="Seats" class="form-label"></label>
+            <input asp-for="Seats" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="FromPlace" class="form-label"></label>
+            <input asp-for="FromPlace" class="form-control" />
+        </div>
+
+        <div class="col-md-12">
+            <label asp-for="Destinations" class="form-label"></label>
+            <input asp-for="Destinations" class="form-control" />
+        </div>
+
+        <div class="col-md-12">
+            <label asp-for="ImageUrl" class="form-label"></label>
+            <input asp-for="ImageUrl" class="form-control" />
+        </div>
+
+        <div class="col-md-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Отдел</label>
+            <select asp-for="DepartmentId"
+                    class="form-select"
+                    id="departmentSelect"
+                    asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
+                <option value="">-- Избери отдел --</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Категория</label>
+            <select asp-for="CategoryId"
+                    class="form-select"
+                    id="categorySelect"
+                    asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                <option value="">-- Избери категория --</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Подкатегория</label>
+            <select asp-for="SubCategoryId"
+                    class="form-select"
+                    id="subCategorySelect"
+                    asp-items="@(new SelectList(Model.SubCategories, "Id", "Name"))">
+                <option value="">-- Избери подкатегория --</option>
+            </select>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4 class="mt-3">Характеристики</h4>
+
+    <div class="row">
+        @foreach (var group in Model.FeatureGroups)
+        {
+            <div class="col-md-3">
+                <h6 class="fw-bold">@group.FeatureCategoryName</h6>
+
+                @foreach (var feature in group.Features)
+                {
+                    <div class="form-check">
+                        @if (group.SingleSelection)
+                        {
+                            <input class="form-check-input single-feature"
+                                   type="radio"
+                                   name="SingleFeature_@group.FeatureCategoryId"
+                                   value="@feature.Id"
+                            @(Model.SelectedFeatureIds.Contains(feature.Id) ? "checked" : "") />
+                        }
+                        else
+                        {
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="SelectedFeatureIds"
+                                   value="@feature.Id"
+                            @(Model.SelectedFeatureIds.Contains(feature.Id) ? "checked" : "") />
+                        }
+
+                        <label class="form-check-label">
+                            @feature.Name
+                        </label>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <input type="hidden"
+           id="SingleSelectedFeatureIds"
+           name="SingleSelectedFeatureIds" />
+
+    <hr />
+
+    <button type="submit" class="btn btn-cta-cadetblue">Запази</button>
+    <a asp-action="List" class="btn btn-tan">Отказ</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function () {
+            const radios = document.querySelectorAll('.single-feature:checked');
+            const values = Array.from(radios).map(r => r.value);
+            document.getElementById('SingleSelectedFeatureIds').value = values.join(',');
+        });
+
+        document.getElementById('departmentSelect')
+            .addEventListener('change', function () {
+
+                const departmentId = this.value;
+                const categorySelect = document.getElementById('categorySelect');
+                const subCategorySelect = document.getElementById('subCategorySelect');
+
+                categorySelect.innerHTML = '<option value="">-- Избери категория --</option>';
+                subCategorySelect.innerHTML = '<option value="">-- Избери подкатегория --</option>';
+
+                if (!departmentId) {
+                    return;
+                }
+
+                fetch(`/Trips/GetCategoriesByDepartment?departmentId=${departmentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(c => {
+                            const option = document.createElement('option');
+                            option.value = c.id;
+                            option.textContent = c.name;
+                            categorySelect.appendChild(option);
+                        });
+                    });
+            });
+        document.getElementById('categorySelect')
+            .addEventListener('change', function () {
+
+                const categoryId = this.value;
+                const subSelect = document.getElementById('subCategorySelect');
+
+                subSelect.innerHTML = '<option value="">-- Избери подкатегория --</option>';
+
+                if (!categoryId) {
+                    return;
+                }
+
+                fetch(`/Trips/GetSubCategoriesByCategory?categoryId=${categoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(sc => {
+                            const option = document.createElement('option');
+                            option.value = sc.id;
+                            option.textContent = sc.name;
+                            subSelect.appendChild(option);
+                        });
+                    });
+            });
+    </script>
+}
+

@@ -1,0 +1,304 @@
+﻿@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css');
+
+header, .navbar {
+    margin: 0 !important;
+}
+
+main > .container,
+main.container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.btn.btn-tan {
+    background-color: rgb(193, 144, 72) !important;
+    color: #fff !important;
+    border-color: rgb(193, 144, 72) !important;
+}
+
+.btn.btn-tan:hover {
+    background-color: cadetblue !important;
+    border-color: cadetblue !important;
+    color: #fff !important;
+}
+
+.btn-delete-light {
+    background-color: #b03131;
+    color: #fff;
+    border: 1px solid #b03131;
+    font-weight: 600;
+}
+
+.btn-delete-light:hover {
+    background-color: #f1aeb5;
+    color: #842029;
+}
+.btn-begin {
+    background-color: cadetblue;
+    color: white;
+    text-decoration: none !important;
+}
+
+.btn-begin:hover {
+    background-color: rgb(193, 144, 72) !important; 
+    color: white;
+    box-shadow: 0 0.5rem 1rem rgb(71, 163, 135);
+}
+
+.hero-section {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
+}
+
+.moving-gradient {
+    background: linear-gradient(120deg, rgba(0, 123, 255, 0.25), rgba(255, 255, 255, 0.25), rgba(0, 212, 255, 0.25));
+    background-size: 300% 300%;
+    animation: gradientMove 10s ease infinite;
+    z-index: 1;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.typing-text {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid rgba(255, 255, 255, 0.75);
+    width: 0;
+    animation: typing 4s steps(30, end) forwards, blink 0.7s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+.hero-text {
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+
+.cta-cadetblue {
+    color: cadetblue !important;
+}
+.badge-tan {
+    background-color: #d2a24c;
+    color: #fff;
+}
+
+.badge-cadet {
+    background-color: #5f9ea0;
+    color: #fff;
+}
+
+.badge-muted {
+    background-color: #adb5bd;
+    color: #fff;
+}
+.btn-outline-secondary:hover {
+    background-color: #5f9ea0; 
+    border-color: #5f9ea0;
+    color: #fff;
+}
+
+#scrollTopBtn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: none;
+    z-index: 999;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    padding: 10px;
+}
+
+#scrollTopBtn i {
+    font-size: 1.2rem;
+}
+
+.nav-item {
+    margin-right: 20px;
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+.navbar {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    min-height: 50px !important;
+}
+
+body {
+    background-color: #c6dfdd !important;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.navbar-brand {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    font-size: 30px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 8px;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background-color: rgba(13, 110, 253, 0.08);
+}
+
+.active-link {
+    color: #fff !important;
+    background-color: cadetblue !important;
+    box-shadow: 0 0 6px rgba(13, 110, 253, 0.4);
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: cadetblue;
+    border-color: rgba(0, 212, 255, 0.25);
+}
+
+html {
+    font-size: 14px;
+    background-color: #c6dfdd !important;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .hero-text {
+        text-align: center;
+        margin: 0 auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+.cta-tan-text {
+    color: rgb(193, 144, 72) !important;
+}
+
+.badge {
+    border-radius: 18px;
+    letter-spacing: 0.4px;
+}
+
+.hover-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+}
+
+.card-body .badge {
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+.btn-cta-cadetblue {
+    background-color: cadetblue;
+    color: white; 
+    border-color: cadetblue;
+    text-decoration: none !important;
+}
+
+.btn-cta-cadetblue:hover {
+    background-color: rgb(193, 144, 72);
+    color: white; 
+    box-shadow: 0 0.5rem 1rem rgba(95, 158, 160, 0.5);
+}
+
+
+html, body {
+    height: 100%;
+}
+
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
+}

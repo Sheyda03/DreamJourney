@@ -1,0 +1,107 @@
+﻿@inject DreamJourney.Services.Interfaces.IUserContextService UserContext
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Dream Journey</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white shadow-sm p-0">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary fs-4" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="text-info cta-tan-text">Dream</span>
+                    <span class="text-info">Journey</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-center gap-2">
+
+                        <li class="nav-item">
+                            <a class="nav-link @((ViewContext.RouteData.Values["controller"]?.ToString() == "Home") ? "active-link" : "")"
+                               asp-controller="Home" asp-action="Index">Начало</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @((ViewContext.RouteData.Values["action"]?.ToString() == "List") ? "active-link" : "")"
+                               asp-controller="Trips" asp-action="List">Предложения</a>
+                        </li>
+                        @if (UserContext.IsTripCreator)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @((ViewContext.RouteData.Values["action"]?.ToString() == "TripsByCreator") ? "active-link" : "")"
+                                   asp-controller="Trips"
+                                   asp-action="TripsByCreator">
+                                    Моите оферти
+                                </a>
+                            </li>
+                        }
+                        @if (UserContext.IsLoggedIn)
+                        {
+                            @if (!UserContext.IsTripCreator)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @((ViewContext.RouteData.Values["action"]?.ToString() == "MyTrips") ? "active-link" : "")"
+                                       asp-controller="TripApplications"
+                                       asp-action="MyTrips">
+                                        Моите резервации
+                                    </a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Users" asp-action="Logout">Изход</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @((ViewContext.RouteData.Values["action"]?.ToString() == "Login") ? "active-link" : "")"
+                                   asp-controller="Users" asp-action="Login">Вход</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @((ViewContext.RouteData.Values["action"]?.ToString() == "Register") ? "active-link" : "")"
+                                   asp-controller="Users" asp-action="Register">Регистрация</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    
+    <main role="main" class="pb-0">
+        @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Home")
+        {
+            @RenderBody()   
+        }
+        else
+        {
+            <div class="container py-3">
+                @RenderBody()   
+            </div>
+        }
+    </main>
+    
+
+    <footer class="border-top footer text-muted mt-auto py-3">
+        <div class="container text-center">
+            &copy; 2025 - Dream Journey
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
